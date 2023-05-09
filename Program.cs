@@ -3,27 +3,47 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-var builder = Host.CreateDefaultBuilder(args)
-    .ConfigureWebHostDefaults(webBuilder =>
+namespace YourNamespace
+{
+    public class Program
     {
-        webBuilder.UseStartup<Startup>();
-
-        if (!webBuilder.GetSetting("Environment").Equals("Development"))
+        public static void Main(string[] args)
         {
-            webBuilder.UseExceptionHandler("/Error");
+            CreateHostBuilder(args).Build().Run();
         }
-        webBuilder.UseStaticFiles();
 
-        webBuilder.UseRouting();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+    }
 
-        webBuilder.UseAuthorization();
-
-        webBuilder.UseEndpoints(endpoints =>
+    public class Startup
+    {
+        public void ConfigureServices(IServiceCollection services)
         {
-            endpoints.MapRazorPages();
-        });
-    });
+            // Configure services here
+        }
 
-var app = builder.Build();
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
-app.Run();
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                // Configure endpoints here
+            });
+        }
+    }
+}
