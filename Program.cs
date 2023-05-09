@@ -1,9 +1,8 @@
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
-var builder = WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
-
+builder.WebHost.UseStartup<Startup>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
