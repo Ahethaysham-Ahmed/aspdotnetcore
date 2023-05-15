@@ -26,13 +26,13 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp --self-contained false /p:PublishTrimmed=true /p:TrimMode=Link /p:DebugType=None /p:DebugSymbols=false /p:ExcludeRuntimes=true /p:ExcludeNativeBinaries=true /p:ExcludeXmlAssemblyFiles=true /p:ExcludeApp_Data=true /p:ExcludeViews=true /p:ExcludeNuGetPackage=true /p:ExcludeGeneratedDebugSymbol=true /p:ExcludeGeneratedDocumentation=true /p:ExcludeXmlSerializer=false /p:ExcludePdbFiles=true /p:ExcludeDefaultWebModules=true
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}
+          path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
     runs-on: windows-latest
@@ -54,4 +54,4 @@ jobs:
           app-name: 'arcwebapp111'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5AACBB6257BD431EA95EA8EC6D141E63 }}
-          package: ./myapp # Change this to the correct path of your package
+          package: .
