@@ -54,4 +54,4 @@ jobs:
           app-name: 'arcwebapp111'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5AACBB6257BD431EA95EA8EC6D141E63 }}
-          package: .
+          package: ./myapp # Change this to the correct path of your package
