@@ -22,16 +22,19 @@ jobs:
           dotnet-version: '5.0.x'
           include-prerelease: true
 
+      - name: Restore NuGet packages
+        run: dotnet restore
+
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
-      - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp --self-contained false /p:PublishTrimmed=true /p:TrimMode=Link /p:DebugType=None /p:DebugSymbols=false /p:ExcludeRuntimes=true /p:ExcludeNativeBinaries=true /p:ExcludeXmlAssemblyFiles=true /p:ExcludeApp_Data=true /p:ExcludeViews=true /p:ExcludeNuGetPackage=true /p:ExcludeGeneratedDebugSymbol=true /p:ExcludeGeneratedDocumentation=true /p:ExcludeXmlSerializer=false /p:ExcludePdbFiles=true /p:ExcludeDefaultWebModules=true
+      - name: Publish with dotnet
+        run: dotnet publish --configuration Release --self-contained false /p:PublishTrimmed=true /p:TrimMode=Link /p:DebugType=None /p:DebugSymbols=false /p:ExcludeRuntimes=true /p:ExcludeNativeBinaries=true /p:ExcludeXmlAssemblyFiles=true /p:ExcludeApp_Data=true /p:ExcludeViews=true /p:ExcludeNuGetPackage=true /p:ExcludeGeneratedDebugSymbol=true /p:ExcludeGeneratedDocumentation=true /p:ExcludeXmlSerializer=false /p:ExcludePdbFiles=true /p:ExcludeDefaultWebModules=true -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
-          name: .net-app
+          name: dotnet-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
@@ -45,7 +48,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: .net-app
+          name: dotnet-app
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -54,4 +57,4 @@ jobs:
           app-name: 'arcwebapp111'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5AACBB6257BD431EA95EA8EC6D141E63 }}
-          package: .
+          package: ${{ github.workspace }}/dotnet-app
